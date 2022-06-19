@@ -1,0 +1,145 @@
+#import the necessary libaries needed for the analysis
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+#import the dataset in a csv format
+data=pd.read_csv('C:/Users/pc/Documents/BI CHALLENGE/Onyx-Data-DataDNA-Dataset-Challenge-June-2022-Forbes-Worlds-Billionaires-List-2022/Onyx Data DataDNA Dataset Challenge June 2022.csv')
+
+#To display the first five rows of the data set
+print(data.head())
+
+#To display the columns of the dataset
+data.columns
+
+#To display the info of each columns in the dataset
+data.info()
+
+#Display the rows and columns of the datset
+data.shape
+
+#Display the statistics of the data(min,max,25%...)
+data.describe()
+
+#To drop duplicates value in the data
+data.drop_duplicates()
+
+#To display columns with empty value and sum the empty values
+data.isna().sum()
+
+#To fill empty values in column 'country' with 'Nil'
+data['country']=data['country'].fillna('Nil')
+
+#To find how many category  are available in the dataset
+cat=data['category'].value_counts()
+print(cat)
+
+#plot a bar chart for the categories values using matplotlib
+plt.style.use('ggplot')
+fig,ax=plt.subplots()
+ax.bar(cat['index'],cat['category'],color='c')
+ax.set_title('FORBES BILLIONAIRES CATEGORY',color='r')
+ax.set_xlabel('CATEGORY',color='r')
+ax.set_ylabel('# OF CATEGORY',color='r')
+ax.tick_params('x',colors='r')
+ax.tick_params('y',colors='r')
+ax.set_xticklabels(cat['index'],rotation=20,horizontalalignment='right')
+ax.text(0,392,392,color='r')
+ax.text(1,343,343,color='r')
+ax.text(2,337,337,color='r')
+ax.text(3,250,250,color='r')
+ax.text(4,217,217,color='r')
+ax.text(5,203,203,color='r')
+ax.text(6,193,193,color='r')
+ax.text(7,180,180,color='r')
+ax.text(8,99,99,color='r')
+ax.text(9,95,95,color='r')
+ax.text(10,70,70,color='r')
+ax.text(11,68,68,color='r')
+ax.text(12,53,53,color='r')
+ax.text(13,46,46,color='r')
+ax.text(14,37,37,color='r')
+ax.text(15,35,35,color='r')
+ax.text(16,27,27,color='r')
+ax.text(17,23,23,color='r')
+plt.show()
+
+#to display billionaires name,worth and their country,from highest to lowest
+top=data[['personName','finalWorth','country']].sort_values('finalWorth',ascending=False)
+print(top)
+
+#display the top five billonaires and their countries
+topfive=top.query('finalWorth>=118000')
+topfive
+
+#plot a bar chart for the top five billionaires and country using seaborn
+sns.set_style('whitegrid')
+sns.set_palette('RdBu')
+g=sns.barplot(topfive['personName'],topfive['finalWorth'],hue=topfive['country'])
+g.set_title('TOP FIVE BILLIONARIES IN THE WORLD($)',color='r')
+g.set_xlabel('NAME',color='r')
+g.set_ylabel('FINAL WORTH($)',color='r')
+g.tick_params('x',colors='r')
+g.tick_params('y',colors='r')
+g.set_xticklabels(topfive['personName'],rotation=20,horizontalalignment='right')
+g.text(0,219000,'$219M',color='r')
+g.text(1,171000,'$171M',color='r')
+g.text(2,158000,'$158M',color='r')
+g.text(3,129000,'$129M',color='r')
+g.text(4,118000,'$118M',color='r')
+plt.show()
+
+#how many billonaires are self made
+self=data['selfMade'].value_counts()
+print(self)
+
+#plot a pie chart for the self
+self.plot(kind='pie', autopct='%1.1f%%',subplots=True)
+plt.show()
+
+#display how many male and female billionaires
+gender=data['gender'].value_counts()
+print(gender)
+
+#plot a pie chart for gender
+gender.plot(kind='pie',autopct='%1.1f%%',subplots=True)
+plt.show()
+
+#display the organization with the highest Worth
+worth=data.groupby('organization')['finalWorth'].sum().sort_values(ascending=False)
+print(worth)
+
+#display the billionaire with the most philanthropy score
+score=data.groupby('personName')['philanthropyScore'].sum().sort_values(ascending=False)
+score
+
+#plot a bar chart forthe top five most philanthropist billionaires and top five organization with the highest worth on same page
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+fig,ax=plt.subplots(1,2)
+ax[0].bar(score['personName'],score['philanthropyScore'],color='c')
+ax[0].set_title('TOP 5 PHILANTHROPY BILLIONAIRES',color='g')
+ax[0].set_xlabel('NAME',color='g')
+ax[0].set_ylabel('# OF SCORE',color='g')
+ax[0].tick_params('x',colors='g')
+ax[0].tick_params('y',colors='g')
+ax[0].set_xticklabels(score['personName'],rotation=20,horizontalalignment='right')
+ax[0].text(0,5,'5',color='g')
+ax[0].text(1,5,'5',color='g')
+ax[0].text(2,5,'5',color='g')
+ax[0].text(3,5,'5',color='g')
+ax[0].text(4,5,'5',color='g')
+ax[1].bar(worth['organization'],worth['finalWorth'],color='m')
+ax[1].set_title('TOP 5 ORGANIZATION WITH FINAL WORTH($)',color='g')
+ax[1].set_xlabel('ORGANIZATION',color='g')
+ax[1].set_ylabel('# OF FINAL WORTH($)',color='g')
+ax[1].tick_params('x',colors='g')
+ax[1].tick_params('y',colors='g')
+ax[1].set_xticklabels(worth['organization'],rotation=20,horizontalalignment='right')
+ax[1].text(0,219000,'$219M',color='g')
+ax[1].text(1,218000,'$218M',color='g')
+ax[1].text(2,171000,'$171M',color='g')
+ax[1].text(3,158000,'$158M',color='g')
+ax[1].text(4,135200,'$135M',color='g')
+plt.show()
